@@ -1,11 +1,11 @@
 #pragma once
 
 #include <stdint.h>
+#include <driver/i2c.h>
 
 class MS5837 {
     private:
-        uint8_t sda;
-        uint8_t scl;
+        i2c_port_t port;
 
         uint16_t C[8];
         uint32_t D1_pres, D2_temp;
@@ -14,6 +14,9 @@ class MS5837 {
         uint8_t _model;
 
         float fluidDensity;
+
+        esp_err_t i2c_register_write_byte(uint8_t reg_addr, uint8_t data);
+        esp_err_t i2c_register_read(uint8_t reg_addr, uint8_t *data, size_t len);
 
         /** Performs calculations per the sensor data sheet for conversion and
          *  second order compensation.
@@ -30,10 +33,9 @@ class MS5837 {
         static const uint8_t MS5837_02BA;
         static const uint8_t MS5837_UNRECOGNISED;
 
-        MS5837(uint8_t pinSDA = 0, uint8_t pinSCL = 0);
+        MS5837(i2c_port_t port = I2C_NUM_0);
 
-        uint8_t getSDA();
-        uint8_t getSCL();
+        bool init();
 
         //bool init(TwoWire &wirePort = Wire);
         //bool begin(TwoWire &wirePort = Wire); // Calls init()
