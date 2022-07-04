@@ -6,6 +6,21 @@ class MS5837 {
     private:
         uint8_t sda;
         uint8_t scl;
+
+        uint16_t C[8];
+        uint32_t D1_pres, D2_temp;
+        int32_t TEMP;
+        int32_t P;
+        uint8_t _model;
+
+        float fluidDensity;
+
+        /** Performs calculations per the sensor data sheet for conversion and
+         *  second order compensation.
+         */
+        void calculate();
+
+        uint8_t crc4(uint16_t n_prom[]);
     public:
     	static const float Pa;
         static const float bar;
@@ -15,7 +30,7 @@ class MS5837 {
         static const uint8_t MS5837_02BA;
         static const uint8_t MS5837_UNRECOGNISED;
 
-        MS5837(uint8_t pinSDA, uint8_t pinSCL);
+        MS5837(uint8_t pinSDA = 0, uint8_t pinSCL = 0);
 
         uint8_t getSDA();
         uint8_t getSCL();
